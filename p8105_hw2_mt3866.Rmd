@@ -1,5 +1,27 @@
 ---
 title: "p8105_hw2_mt3866"
-output: git_document
+output: github_document
 ---
+
+First, load the tidyverse library
+
+```{r}
+library(tidyverse)
+```
+
+Importing the data sets we are using
+
+```{r}
+pols_df =
+  read_csv("fivethirtyeight_datasets/pols-month.csv")
+
+unemployment_df =
+  read_csv("fivethirtyeight_datasets/unemployment.csv")
+
+snp_df =
+  read_csv("fivethirtyeight_datasets/snp.csv")
+
+```
+
+
 
