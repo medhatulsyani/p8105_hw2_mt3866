@@ -161,11 +161,26 @@ trash_tidy=
 
 ## Problem 3
 
+Import, clean, and tidy data sets
+
 ```{r}
 zillow_df =
-  read_csv("zillow_data/Zip_Codes.csv")
+  read_csv("zillow_data/Zip_Codes.csv")|>
+    janitor::clean_names()
 
 nyczillow_df =
-  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv")
+  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
+  janitor::clean_names() |>
+    pivot_longer(
+    cols = x2015_01_31:x2024_08_31,
+    names_to = "file_date",
+    values_to = "zillow")|>
+    rename(county = county_name)
+```
+
+merge datasets
+```{r}
+zillow_df=
+  left_join(zillow_df, nyczillow_df, by = ("county"))
 ```
 
