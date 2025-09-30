@@ -3,6 +3,8 @@ title: "p8105_hw2_mt3866"
 output: github_document
 ---
 
+## Problem 1
+
 First, load the tidyverse library
 
 ```{r}
@@ -37,8 +39,10 @@ pols_df=
       month = month.name[month]
     ) |>
   mutate(president = prez_dem + prez_gop
-         ) 
+         ) |>
+mutate(month = substr(month, 1, 3))
   pols_df = select(pols_df, -day, -prez_dem, -prez_gop)
+
 ```
 
 Clean the data in snp.csv using a similar process to the above. Arrange according to year and month, and organize so that year and month are the leading columns.
@@ -55,13 +59,12 @@ snp_df=
       month = month.name[month]
     ) |>
   select(year, month, everything())|>
-    arrange(year, month)
+  mutate(month = substr(month, 1, 3))
 
 ```
 
 Tidy the unemployment data so that it can be merged with the previous datasets.
 ```{r}
-library(readxl)
 library(haven)
 unemployment_df=
   read_csv("fivethirtyeight_datasets/unemployment.csv") |>
@@ -70,12 +73,31 @@ unemployment_df=
     cols = jan:dec,
     names_to = "month"
   )
+
 ```
 
-Join the datasets by merging snp into pols, and merging unemployment into the result.
+Join the datasets by merging snp into pols
 
 ```{r}
 pols_df=
-  
+  left_join(pols_df, snp_df, by = c("year", "month"))
+```
+
+Merge unemployment into the result
+
+```{r}
+pols_df=
+  left_join(pols_df, unemployment_df, by = c("year", "month"))
+```
+
+## Problem 2
+
+```{r}
+library(readxl)
+trash_df =
+  read_excel("dataset2/trash_wheel.xlsx",
+             skip = 2,
+             sheet = "Mr. Trash Wheel",
+             na = c(".", "NA", ""))
 ```
 
