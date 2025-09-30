@@ -92,6 +92,8 @@ pols_df=
 
 ## Problem 2
 
+Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel, use reasonable variable names, omit rows that do not include dumpster-specific data, round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
+
 ```{r}
 library(readxl)
 trash_df =
@@ -108,7 +110,33 @@ trash_df=
     round(sports_balls),
     sports_balls = as.integer(sports_balls)
     )
+```
 
+Use a similar process for professor trash wheel and gwynnda
 
+```{r}
+library(readxl)
+secondtrash_df =
+  read_excel("dataset2/trash_wheel.xlsx",
+             skip = 1,
+             sheet = "Professor Trash Wheel",
+             na = c(".", "NA", "")
+  )
+
+secondtrash_df=
+  drop_na(secondtrash_df, Dumpster)|>
+  janitor::clean_names()
+
+library(readxl)
+thirdtrash_df =
+  read_excel("dataset2/trash_wheel.xlsx",
+             skip = 1,
+             sheet = "Gwynnda Trash Wheel",
+             na = c(".", "NA", "")
+  )
+
+thirdtrash_df=
+  drop_na(thirdtrash_df, Dumpster)|>
+  janitor::clean_names()
 ```
 
