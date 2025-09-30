@@ -47,17 +47,35 @@ Clean the data in snp.csv using a similar process to the above. Arrange accordin
 snp_df=
     read_csv("fivethirtyeight_datasets/snp.csv") |>
     janitor::clean_names() |>
-      separate(date, into = c("year", "month", "day"), sep = "/") |>
+    separate(date, into = c("month", "day", "year"), sep = "/") |>
+    select(-day) |>
     mutate(
       year = as.integer(year),
       month = as.integer(month),
-      day = as.integer(day)
-    )|>
-    arrange(snp_df, year, month)
+      month = month.name[month]
+    ) |>
+  select(year, month, everything())|>
+    arrange(year, month)
+
 ```
 
 Tidy the unemployment data so that it can be merged with the previous datasets.
+```{r}
+library(readxl)
+library(haven)
+unemployment_df=
+  read_csv("fivethirtyeight_datasets/unemployment.csv") |>
+  janitor::clean_names() |>
+  pivot_longer(
+    cols = jan:dec,
+    names_to = "month"
+  )
+```
 
+Join the datasets by merging snp into pols, and merging unemployment into the result.
 
-
+```{r}
+pols_df=
+  
+```
 
