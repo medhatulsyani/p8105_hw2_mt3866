@@ -96,8 +96,19 @@ pols_df=
 library(readxl)
 trash_df =
   read_excel("dataset2/trash_wheel.xlsx",
-             skip = 2,
+             skip = 1,
              sheet = "Mr. Trash Wheel",
-             na = c(".", "NA", ""))
+             na = c(".", "NA", "")
+  )
+
+trash_df=
+  drop_na(trash_df, Dumpster)|>
+  janitor::clean_names()|>
+  mutate(
+    round(sports_balls),
+    sports_balls = as.integer(sports_balls)
+    )
+
+
 ```
 
