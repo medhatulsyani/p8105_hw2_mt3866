@@ -41,6 +41,20 @@ pols_df=
   pols_df = select(pols_df, -day, -prez_dem, -prez_gop)
 ```
 
+Clean the data in snp.csv using a similar process to the above. Arrange according to year and month, and organize so that year and month are the leading columns.
+
+```{r}
+snp_df=
+    read_csv("fivethirtyeight_datasets/snp.csv") |>
+    janitor::clean_names() |>
+      separate(date, into = c("year", "month", "day"), sep = "/") |>
+    mutate(
+      year = as.integer(year),
+      month = as.integer(month),
+      day = as.integer(day)
+    )
+```
+
 
 
 
