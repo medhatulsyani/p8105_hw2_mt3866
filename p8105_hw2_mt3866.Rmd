@@ -23,5 +23,21 @@ snp_df =
 
 ```
 
+Clean names in pols-months data set, separate into year month and day, make year and day integers while month is a character word.
+
+```{r}
+pols_df=
+    read_csv("fivethirtyeight_datasets/pols-month.csv") |>
+    janitor::clean_names() |>
+    separate(mon, into = c("year", "month", "day"), sep = "-") |>
+    mutate(
+      year = as.integer(year),
+      month = as.integer(month),
+      day = as.integer(day),
+      month = month.name[month]
+    ) 
+
+```
+
 
 
