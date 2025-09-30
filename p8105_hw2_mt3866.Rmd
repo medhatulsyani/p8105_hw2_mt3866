@@ -52,9 +52,11 @@ snp_df=
       year = as.integer(year),
       month = as.integer(month),
       day = as.integer(day)
-    )
+    )|>
+    arrange(snp_df, year, month)
 ```
 
+Tidy the unemployment data so that it can be merged with the previous datasets.
 
 
 
