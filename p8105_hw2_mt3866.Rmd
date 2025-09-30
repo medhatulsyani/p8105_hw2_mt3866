@@ -159,3 +159,13 @@ trash_tidy=
 
 ```
 
+## Problem 3
+
+```{r}
+zillow_df =
+  read_csv("zillow_data/Zip_Codes.csv")
+
+nyczillow_df =
+  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv")
+```
+
