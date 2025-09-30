@@ -23,7 +23,7 @@ snp_df =
 
 ```
 
-Clean names in pols-months data set, separate into year month and day, make year and day integers while month is a character word.
+Clean names in pols-months data set, separate into year month and day, make year and day integers while month is a character word. Now, remove prez_dem prez_gop and the day variable, and make a president variable taking values gop and dem.
 
 ```{r}
 pols_df=
@@ -35,9 +35,13 @@ pols_df=
       month = as.integer(month),
       day = as.integer(day),
       month = month.name[month]
-    ) 
-
+    ) |>
+  mutate(president = prez_dem + prez_gop
+         ) 
+  pols_df = select(pols_df, -day, -prez_dem, -prez_gop)
 ```
+
+
 
 
 
