@@ -106,10 +106,8 @@ trash_df =
 trash_df=
   drop_na(trash_df, Dumpster)|>
   janitor::clean_names()|>
-  mutate(
-    round(sports_balls),
-    sports_balls = as.integer(sports_balls)
-    )
+  mutate(sports_balls = as.integer(round(sports_balls)))
+
 ```
 
 Use a similar process for professor trash wheel and gwynnda
@@ -138,5 +136,26 @@ thirdtrash_df =
 thirdtrash_df=
   drop_na(thirdtrash_df, Dumpster)|>
   janitor::clean_names()
+```
+
+Bind rows (combine data)
+
+```{r}
+trash_df= 
+    read_excel("dataset2/trash_wheel.xlsx") |>
+  mutate(newdumpster="Mr_Trash_Wheel")
+  
+secondtrash_df=
+  read_excel("dataset2/trash_wheel.xlsx") |>
+    mutate(newdumpster="Professor_Trash_Wheel")
+  
+thirdtrash_df=
+  read_excel("dataset2/trash_wheel.xlsx") |>
+    mutate(newdumpster="Gwynnda_Trash_Wheel")
+
+trash_tidy=
+    bind_rows(trash_df, secondtrash_df, thirdtrash_df) |>
+    janitor::clean_names()
+
 ```
 
