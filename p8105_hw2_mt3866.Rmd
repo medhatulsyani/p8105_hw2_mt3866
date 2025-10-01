@@ -151,12 +151,16 @@ trash_tidy=
 Calculating totals for summary
 ```{r}
 sum(trash_tidy$weight_tons, na.rm = TRUE)
-sum(gwynnda_df$cigarette_butts, na.rm = TRUE)
+
+gwynnda_df |>
+  filter(month == "June", year == 2022) |>
+  summarise(total_butts = sum(cigarette_butts, na.rm = TRUE))
+
 
 ```
 
 
-In this combined data, there were 1,188 observations. Some key variables were dumpster which indicated the dumpster number the data was associated with, weight which described the weight of trash collected, and plastic which described how much plastic was gathered in the trash. The total weight collected was 3,637.57 tons. The total number of cigarette butts collected by Gwynnda is 1,044,820.
+In this combined data, there were 1,188 observations. Some key variables were dumpster which indicated the dumpster number the data was associated with, weight which described the weight of trash collected, and plastic which described how much plastic was gathered in the trash. The total weight collected was 3,637.57 tons. The total number of cigarette butts collected by Gwynnda in June 2022 is 18,120.
 ## Problem 3
 
 Import, clean, and tidy the datasets
