@@ -195,7 +195,7 @@ merge datasets
 
 ```{r}
 combinedzillow_df=
-  left_join(zillow_df, rent_df, by = c("zip_code"))|>
+  left_join(rent_df, zillow_df, by = c("zip_code"))|>
   select(zori, everything())
 ```
 
@@ -205,10 +205,10 @@ Rental Price Drop:
 ```{r}
 fluctuation_df=
   combinedzillow_df |>
-  select(zori, city, neighborhood, zip_code, month.y, year.y)|>
-  filter(month.y == "01", year.y %in% c(2020, 2021)) |>
+  select(zori, city, neighborhood, zip_code, month.x, year.x)|>
+  filter(month.x == "01", year.x %in% c(2020, 2021)) |>
   pivot_wider(
-    names_from = year.y,
+    names_from = year.x,
     values_from = zori,
     names_prefix = "rental_",
     values_fn = mean 
