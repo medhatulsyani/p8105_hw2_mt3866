@@ -1,6 +1,7 @@
 ---
-title: "p8105_hw2_mt3866"
+title: "p8105_hw2"
 output: github_document
+date: "2025-10-01"
 ---
 
 ## Problem 1
@@ -10,6 +11,7 @@ First, load the tidyverse library
 ```{r}
 library(tidyverse)
 library(readxl)
+library(stringr)
 ```
 
 Importing the data sets we are using
@@ -39,8 +41,9 @@ pols_df=
       day = as.integer(day),
       month = month.name[month]
     ) |>
-  mutate(president = prez_dem + prez_gop
-         ) |>
+  mutate(president = case_when(
+    prez_gop == 1 ~ "gop",
+    prez_dem == 1 ~ "dem"))|>
   mutate(month = str_to_lower(month)) |>
   mutate(month = substr(month, 1, 3))
   pols_df = select(pols_df, -day, -prez_dem, -prez_gop)
@@ -92,91 +95,122 @@ mergedpols_df=
   left_join(newpols_df, unemployment_df, by = c("year", "month"))
 ```
 
-## Problem 2
+The dataset pols-month held data regarding political affiliations of politicians at any given time. The politicians range from representatives to senators, governors, and presidents. In the merged dataset, the data ranges from the date of observation being between the years 1947 to 2015. Key variables include year, month, and president. President indicates whether the president was affiliated with the Republican or Democratic party. The dataset unemployment held data on the percentage of unemployment in a month of a given year. The dataset snp held data describing how well the stock market was doing overall.
+
+## Question 2
 
 Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel, use reasonable variable names, omit rows that do not include dumpster-specific data, round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
 
 ```{r}
-trash_df =
-  read_excel("dataset2/trash_wheel.xlsx",
-             skip = 1,
-             sheet = 1,
-  )
-
 trash_df=
-  drop_na(trash_df, Dumpster)|>
+  read_excel("dataset2/202509 Trash Wheel Collection Data.xlsx",
+             skip = 1,
+             sheet=1,
+             col_names=TRUE
+             )|>
+  drop_na(Dumpster)|>
   janitor::clean_names()|>
-  mutate(sports_balls = as.integer(round(sports_balls)))
-
+  mutate(sports_balls = as.integer(round(sports_balls)))|>
+  mutate(newvar="trash_df")|>
+  mutate(year = as.integer(year))
 ```
 
-Use a similar process for professor trash wheel and gwynnda
+Use a similar process for Professor Trash Wheel 
 
 ```{r}
-secondtrash_df =
-  read_excel("dataset2/trash_wheel.xlsx",
+professortrash_df=
+  read_excel("dataset2/202509 Trash Wheel Collection Data.xlsx",
              skip = 1,
-             sheet = 2
-  )
+             sheet = 2,
+             col_names=TRUE)|>
+  drop_na(Dumpster)|>
+  janitor::clean_names()|>
+  mutate(newvar="professortrash_df")
+```
 
-secondtrash_df=
-  drop_na(secondtrash_df, Dumpster)|>
-  janitor::clean_names()
+Use a similar process for Gwynnda
 
-thirdtrash_df =
-  read_excel("dataset2/trash_wheel.xlsx",
+```{r}
+gwynnda_df=
+  read_excel("dataset2/202509 Trash Wheel Collection Data.xlsx",
              skip = 1,
              sheet = 4,
-  )
-
-thirdtrash_df=
-  drop_na(thirdtrash_df, Dumpster)|>
-  janitor::clean_names()
+             col_names=TRUE)|>
+  drop_na(Dumpster)|>
+  janitor::clean_names()|>
+  mutate(newvar="gwynnda_df")
 ```
 
-Bind rows (combine data)
+Bind rows
 
 ```{r}
-trash_df= 
-    read_excel("dataset2/trash_wheel.xlsx") |>
-  mutate(newdumpster="Mr_Trash_Wheel")
-  
-secondtrash_df=
-  read_excel("dataset2/trash_wheel.xlsx") |>
-    mutate(newdumpster="Professor_Trash_Wheel")
-  
-thirdtrash_df=
-  read_excel("dataset2/trash_wheel.xlsx") |>
-    mutate(newdumpster="Gwynnda Trash Wheel")
-
 trash_tidy=
-    bind_rows(trash_df, secondtrash_df, thirdtrash_df) |>
-    janitor::clean_names()
+  bind_rows(trash_df, professortrash_df, gwynnda_df)
+```
+
+Calculating totals for summary
+```{r}
+sum(trash_tidy$weight_tons, na.rm = TRUE)
+sum(gwynnda_df$cigarette_butts, na.rm = TRUE)
 
 ```
 
+
+In this combined data, there were 1,188 observations. Some key variables were dumpster which indicated the dumpster number the data was associated with, weight which described the weight of trash collected, and plastic which described how much plastic was gathered in the trash. The total weight collected was 3,637.57 tons. The total number of cigarette butts collected by Gwynnda is 1,044,820.
 ## Problem 3
 
-Import, clean, and tidy data sets
+Import, clean, and tidy the datasets
 
 ```{r}
-zillow_df =
-  read_csv("zillow_data/Zip_Codes.csv")|>
-    janitor::clean_names()
-
-nyczillow_df =
-  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
+zillow_df=
+  read_csv("zillow_data/Zip_Codes.csv",
+             col_names=TRUE)|>
   janitor::clean_names()|>
-    pivot_longer(
+  separate(file_date, into = c("month","day","year"), sep = "/")
+
+
+rent_df=
+  read_csv("zillow_data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv",
+             col_names=TRUE)|>
+  janitor::clean_names()|>
+  pivot_longer(
     cols = x2015_01_31:x2024_08_31,
     names_to = "file_date",
-    values_to = "zillow")|>
-    rename(county = county_name)
+    values_to = "zori",
+    names_prefix ="x"
+  )|>
+  separate(file_date, into = c("year","month","day"), sep = "_") |>
+  rename(county = county_name)|>
+  rename(zip_code = region_name)|>
+  mutate(county = str_remove(county, "County"))|>
+select(zori, everything())
+
 ```
 
 merge datasets
+
 ```{r}
-mergedzillow_df=
-  full_join(zillow_df, nyczillow_df, by = ("county"))
+combinedzillow_df=
+  full_join(zillow_df, rent_df, by = c("zip_code"))|>
+  select(zori, everything())
+```
+
+In this combined dataset, there are 17,687 observations and 17 variables.There are 320 unique zipcodes and 43 unique neighborhoods. I got this by using unique(combinedzillow_df$zip_code) and unique(combinedzillow_df$neighborhood) in the console. 10451 is a zipcode that appeared in the zip code data set but not the zillow rental price data set. It is for the Bronx. 10025 is a zipcode that appeared in the zillow rental price data set and is for New York City. The zip codes in the rental data set may be showing rental prices in areas in New York that have more rental units. Certain areas of New York like New York City are areas that many people desire to live in, and so these areas are likely to be in the rental zip code data for that reason. The largest price drop was in Lower Manhattan by $913 from 6,334$ to 5,422$. Even in 2021, it remained relatively expensive to live in Manhattan, although there was a big drop.
+
+Rental Price Drop:
+```{r}
+fluctuation_df=
+  combinedzillow_df |>
+  select(zori, city, neighborhood, zip_code, month.y, year.y)|>
+  filter(month.y == "01", year.y %in% c(2020, 2021)) |>
+  pivot_wider(
+    names_from = year.y,
+    values_from = zori,
+    names_prefix = "rental_",
+    values_fn = mean 
+  ) |>
+  mutate(drop = rental_2021 - rental_2020) |>
+  arrange(drop) |>
+  slice_head(n = 10)
 ```
 
