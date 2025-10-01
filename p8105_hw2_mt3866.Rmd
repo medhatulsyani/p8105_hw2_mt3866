@@ -195,11 +195,11 @@ merge datasets
 
 ```{r}
 combinedzillow_df=
-  full_join(zillow_df, rent_df, by = c("zip_code"))|>
+  left_join(zillow_df, rent_df, by = c("zip_code"))|>
   select(zori, everything())
 ```
 
-In this combined dataset, there are 17,687 observations and 17 variables.There are 320 unique zipcodes and 43 unique neighborhoods. I got this by using unique(combinedzillow_df$zip_code) and unique(combinedzillow_df$neighborhood) in the console. 10451 is a zipcode that appeared in the zip code data set but not the zillow rental price data set. It is for the Bronx. 10025 is a zipcode that appeared in the zillow rental price data set and is for New York City. The zip codes in the rental data set may be showing rental prices in areas in New York that have more rental units. Certain areas of New York like New York City are areas that many people desire to live in, and so these areas are likely to be in the rental zip code data for that reason. The largest price drop was in Lower Manhattan by $913 from 6,334$ to 5,422$. Even in 2021, it remained relatively expensive to live in Manhattan, although there was a big drop.
+In this combined dataset, there are 17,687 observations and 21 variables.There are 320 unique zipcodes and 43 unique neighborhoods. I got this by using unique(combinedzillow_df$zip_code) and unique(combinedzillow_df$neighborhood) in the console. 10451 is a zipcode that appeared in the zip code data set but not the zillow rental price data set. It is for the Bronx. 10025 is a zipcode that appeared in the zillow rental price data set and is for New York City. The zip codes in the rental data set may be showing rental prices in areas in New York that have more rental units. Certain areas of New York like New York City are areas that many people desire to live in, and so these areas are likely to be in the rental zip code data for that reason. The largest price drop was in Lower Manhattan by $913 from 6,334$ to 5,422$. Even in 2021, it remained relatively expensive to live in Manhattan, although there was a big drop.
 
 Rental Price Drop:
 ```{r}
